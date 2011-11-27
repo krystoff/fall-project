@@ -19,26 +19,26 @@ class ZombieState
       #event :zombie, :transitions_to => :zombie
     end
     state :exposed do
-      event :risk1, :transitions_to => :risk1
-      event :risk2, :transitions_to => :risk2
-      event :risk3, :transitions_to => :risk3
+      event :exposure_level_1, :transitions_to => :risk_level_1
+      event :exposure_level_2, :transitions_to => :risk_level_2
+      event :exposure_level_3, :transitions_to => :risk_level_3
       event :infected, :transitions_to => :infected
       event :proto_zombie, :transitions_to => :proto_zombie
       #event :zombie, :transitions_to => :zombie
     end
-    state :risk1 do
+    state :risk_level_1 do
       event :quarantine, :transitions_to => :quarantine
       event :infected, :transitions_to => :infected
       event :proto_zombie, :transitions_to => :proto_zombie
       #event :zombie, :transitions_to => :zombie
     end
-    state :risk2 do
+    state :risk_level_2 do
       event :quarantine, :transitions_to => :quarantine
       event :infected, :transitions_to => :infected
       event :proto_zombie, :transitions_to => :proto_zombie
       #event :zombie, :transitions_to => :zombie
     end
-    state :risk3 do
+    state :risk_level_3 do
       event :quarantine, :transitions_to => :quarantine
       event :infected, :transitions_to => :infected
       event :proto_zombie, :transitions_to => :proto_zombie
@@ -72,19 +72,19 @@ class ZombieState
     # update_graphviz_data
   end
 
-  def risk1
+  def risk_level_1
     puts 'low level of risk for infection'
     z_scale = 3
     # update_graphviz_data
   end
   
-  def risk2
+  def risk_level_2
     puts 'moderate level of risk for infection'
     z_scale = 5
     # update_graphviz_data
   end
   
-  def risk3
+  def risk_level_3
     puts 'high level of risk for infection'
     z_scale = 7
     # update_graphviz_data

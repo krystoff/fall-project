@@ -1,7 +1,8 @@
 # UWE Ruby Fall 2011 Class
-# Week 3 Assignment
-# Highline Q & A
-# Chris Larson
+# Fall Project
+#   Chris Larson krystoff@uw.edu
+#   Andy Litzinger ajlitzin@uw.edu
+#   @version 0.1
 #
 #
 
@@ -130,14 +131,35 @@ until done
     q4.choice("It disgusts me.") do |choice|
       ## possibly infected, but not expressing any signs yet
       print "Good.  That's very good.\n\n"
-      risk += -2
+      
+      if subject.z_scale >= 8
+        # no change in subject state
+        
+      elsif subject.z_scale >= 3
+        subject.quarantine!
+        print "You're test results are in-conclusive.  You've had enough exposure to warrant being placed in quarantine.\n\n"
+        
+      else
+        print "Congratulations!  You passed, you are not a zombie.\n  Now try real hard to stay that way.\n\n"
+        
+      end
       
     end
     
     q4.choice("If seasoned properly it might be ok.") do |choice|
       ## could be ok, but best to classify as proto-zombie to be safe
       print "Hmmmm, maybe you just have strange culinary interests.\n\n"
-      risk += 2
+      if subject.z_scale >= 8
+        # no change in subject state
+        
+      elsif subject.z_scale >= 3
+        subject.quarantine!
+        print "You're test results are in-conclusive.  You've had enough exposure to warrant being placed in quarantine.\n\n"
+        
+      else
+        print "Congratulations!  You passed, you are not a zombie.\n  Now try real hard to stay that way.\n\n"
+        
+      end
       
     end
   
