@@ -8,6 +8,7 @@
 
 require 'rubygems'
 require 'highline/import'
+require File.expand_path(File.dirname(__FILE__) + '/../lib/zombie-state.rb')
 
 print "\nWelcome to the 'Am I a Zombie' self-assessment test.\n\n"
 print "**Help stop the terror from spreading, please answer the following questions honestly.**\n\n"
@@ -28,7 +29,7 @@ sleep 5
 done = nil
 until done
   risk = 0
-  subject { ZombieState.new }
+  subject = ZombieState.new
   
   ## Question 1
   choose do |q1|
@@ -121,6 +122,7 @@ until done
   sleep 3
   
   ## Question 4
+  z_result = 'no change'
   choose do |q4|
     ## phenotype test
     puts "How do you feel about eating human brains?  "
@@ -133,62 +135,73 @@ until done
       print "Good.  That's very good.\n\n"
       
       if subject.z_scale >= 8
-        # no change in subject state
-        
+        # no change in subject state        
       elsif subject.z_scale >= 3
-        subject.quarantine!
-        print "You're test results are in-conclusive.  You've had enough exposure to warrant being placed in quarantine.\n\n"
-        
+        z_result = 'quarantine'        
       else
-        print "Congratulations!  You passed, you are not a zombie.\n  Now try real hard to stay that way.\n\n"
-        
+        z_result = 'let go'        
       end
-      
     end
     
     q4.choice("If seasoned properly it might be ok.") do |choice|
       ## could be ok, but best to classify as proto-zombie to be safe
       print "Hmmmm, maybe you just have strange culinary interests.\n\n"
-      if subject.z_scale >= 8
-        # no change in subject state
-        
-      elsif subject.z_scale >= 3
-        subject.quarantine!
-        print "You're test results are in-conclusive.  You've had enough exposure to warrant being placed in quarantine.\n\n"
-        
-      else
-        print "Congratulations!  You passed, you are not a zombie.\n  Now try real hard to stay that way.\n\n"
-        
-      end
       
+      if subject.z_scale = 8
+        z_result = 'proto_zombie'        
+      elsif subject.z_scale >= 1
+        z_result = 'quarantine'        
+      else
+        z_result = 'let go'        
+      end
     end
   
     q4.choice("It is strangely compelling.") do |choice|
       ## proto-zombie
       print "Oh really.  Quit looking at me that way.\n\n"
-      risk += 6
-      
+
+      if subject.z_scale >= 5
+        z_result = 'proto_zombie'        
+      else subject.z_scale >= 0
+        z_result = 'quarantine'        
+      end
     end
   
     q4.choice("Can't stop thinking about it.") do |choice|
       ## late stage proto-zombie
       print "You're starting to creep me out.\n\n"
-      risk += 8
+      z_result = 'proto_zombie'
       
     end
   end
+  
+  ## check which state to place subject into
+  case z_result
+  when 'proto_zombie'
+    subject.proto_zombie! unless subject.z_scale >= 9
+    
+  when 'quarantine'
+    subject.quarantine!
+    
+  when 'let go'
+    # do we need to do anything?
+    
+  end
   sleep 3
   
-  print "Let's check you're score:  Risk Level = #{risk}\n"
+  print "Let's check you're score:  Z-scale = #{subject.z_scale}\n"
   sleep 2
   
-  if risk > 7
+  if subject.z_scale >= 9
     print "Sorry pal, you're a zombie.\n  [Hey guys, we've got another one!]\n\n"
     
-  elsif risk > 5
-    print "Your case is not certain, but you are highly at risk for being a zombie.\n  Take the test again in another 6-12 hours.\n\n"
+  elsif subject.z_scale = 8
+    print "We've got some good news:  Your are not a zombie (yet).  However, you've been infected.  Would you like some tea...?\n\n"
   
-  elsif risk > 3
+  elsif subject.current_state.to_s == "quarantine"
+    print "You're test results are in-conclusive, so we'd like to keep you around for a few days for observation.  .\n\n"
+
+  elsif (subject.z_scale = 1) and (z_result == 'let go')
     print "You've had a close call, but are probably OK.\n  Take the test again in another 12-24 hours if you want to be sure.\n\n"
   
   else
@@ -213,10 +226,3 @@ end
 
 exit
 
-human/not-infected
-exposed-light
-exposed-medium
-exposed-highly
-infected-carrier
-infected-turning-zombie
-infected-zombie

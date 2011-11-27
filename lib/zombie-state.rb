@@ -22,6 +22,7 @@ class ZombieState
       event :exposure_level_1, :transitions_to => :risk_level_1
       event :exposure_level_2, :transitions_to => :risk_level_2
       event :exposure_level_3, :transitions_to => :risk_level_3
+      event :quarantine, :transitions_to => :quarantine
       event :infected, :transitions_to => :infected
       event :proto_zombie, :transitions_to => :proto_zombie
       #event :zombie, :transitions_to => :zombie
