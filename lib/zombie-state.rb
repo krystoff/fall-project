@@ -10,6 +10,45 @@
 require 'workflow'
 class ZombieState
   include Workflow
+  def self.create_workflow_diagram(klass, cur_state = nil, target_dir='.', graph_options='rankdir="LR", size="7,11.6", ratio="fill"')
+    workflow_name = "#{klass.name}_workflow".gsub('/', '_')
+    fname = File.join(target_dir, "generated_#{workflow_name}")
+    File.open("#{fname}.dot", 'w') do |file|
+      file.puts %Q|
+digraph #{workflow_name} {
+  graph [#{graph_options}];
+  node [shape=box];
+  edge [len=1];
+      |
+
+      klass.workflow_spec.states.each do |state_name, state|
+        unless state.name.to_s == cur_state.to_s
+		  file.puts %Q{  #{state.name} [label="#{state.name}"];}
+		else
+		  file.puts %Q{  #{state.name} [style=filled, fillcolor=red label="#{state.name}"];}
+		end
+        state.events.each do |event_name, event|
+          meta_info = event.meta
+          if meta_info[:doc_weight]
+            weight_prop = ", weight=#{meta_info[:doc_weight]}"
+          else
+            weight_prop = ''
+          end
+          file.puts %Q{  #{state.name} -> #{event.transitions_to} [label="#{event_name.to_s}" #{weight_prop}];}
+        end
+      end
+      file.puts "}"
+      file.puts
+    end
+    `dot -Tpdf -o'#{fname}.pdf' '#{fname}.dot'`
+    puts "
+Please run the following to open the generated file:
+
+open '#{fname}.pdf'
+
+"
+  end
+
   workflow do
     state :human do
       event :exposed, :transitions_to => :exposed
@@ -64,18 +103,28 @@ class ZombieState
     puts 'human/not infected'
     z_scale = 0
     # update_graphviz_data
+	#self.class.create_workflow_diagram(ZombieState, "human")
   end
 
   def exposed
     puts 'exposed to zombie'
     z_scale = 1
     # update_graphviz_data
+	self.class.create_workflow_diagram(ZombieState, "exposed")
   end
 
   def risk_level_1
     puts 'low level of risk for infection'
     z_scale = 3
     # update_graphviz_data
+	self.class.create_workflow_diagram(ZombieState, "risk_level_1")
+  end
+  
+  def exposure_level_1
+      puts 'low level of risk for infection'
+    z_scale = 3
+    # update_graphviz_data
+	self.class.create_workflow_diagram(ZombieState, "risk_level_1")
   end
   
   def risk_level_2
@@ -120,39 +169,5 @@ class ZombieState
       
   end
   
-def self.create_workflow_diagram(klass, target_dir='.', graph_options='rankdir="LR", size="7,11.6", ratio="fill"')
-    workflow_name = "#{klass.name}_workflow".gsub('/', '_')
-    fname = File.join(target_dir, "generated_#{workflow_name}")
-    File.open("#{fname}.dot", 'w') do |file|
-      file.puts %Q|
-digraph #{workflow_name} {
-  graph [#{graph_options}];
-  node [shape=box];
-  edge [len=1];
-      |
-
-      klass.workflow_spec.states.each do |state_name, state|
-        file.puts %Q{  #{state.name} [label="#{state.name}"];}
-        state.events.each do |event_name, event|
-          meta_info = event.meta
-          if meta_info[:doc_weight]
-            weight_prop = ", weight=#{meta_info[:doc_weight]}"
-          else
-            weight_prop = ''
-          end
-          file.puts %Q{  #{state.name} -> #{event.transitions_to} [label="#{event_name.to_s}" #{weight_prop}];}
-        end
-      end
-      file.puts "}"
-      file.puts
-    end
-    `dot -Tpdf -o'#{fname}.pdf' '#{fname}.dot'`
-    puts "
-Please run the following to open the generated file:
-
-open '#{fname}.pdf'
-
-"
-  end
 
 end
