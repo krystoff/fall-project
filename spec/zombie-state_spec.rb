@@ -2,7 +2,7 @@
 # Fall Project
 #   Chris Larson krystoff@uw.edu
 #   Andy Litzinger ajlitzin@uw.edu
-#   @version 0.1
+#   @version 0.2
 #
 #
 
@@ -29,6 +29,10 @@ describe "states" do
       subject.exposed!
       subject.current_state.to_s.should == "exposed"
     end
+    it "should have a z_scale of 1" do
+      subject.exposed!
+      subject.z_scale.should == 1
+    end
     it "should not be able to transition back to human when exposed" do
       expect { subject.human! }.to raise_error
     end
@@ -52,6 +56,10 @@ describe "states" do
       subject.infected!
       subject.infected?.should == true
       subject.current_state.to_s.should == "infected"
+    end
+    it "should have a z_scale of 8" do
+      subject.infected!
+      subject.z_scale.should == 8
     end
     it "should not be able to transition back to human when exposed" do
       expect { subject.human! }.to raise_error
@@ -77,6 +85,11 @@ describe "states" do
       subject.infected!
       subject.zombie!
       subject.current_state.to_s.should == "zombie"
+    end
+    it "should have a z_scale of 10" do
+      subject.infected!
+      subject.zombie!
+      subject.z_scale.should == 10
     end
   end
 
