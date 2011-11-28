@@ -2,7 +2,7 @@
 # Fall Project
 #   Chris Larson krystoff@uw.edu
 #   Andy Litzinger ajlitzin@uw.edu
-#   @version 0.1
+#   @version 0.2
 #
 # "Zombie State" tracks subjects on the scale from human-to-zombie
 # 
@@ -62,9 +62,6 @@ class ZombieState
   end
  
   attr_reader :z_scale
-  #def z_scale
-  #  @z_scale = z_scale
-  #end
 
   def human
     puts 'human/not infected'
