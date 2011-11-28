@@ -61,33 +61,38 @@ class ZombieState
     state :zombie
   end
  
+  attr_reader :z_scale
+  #def z_scale
+  #  @z_scale = z_scale
+  #end
+
   def human
     puts 'human/not infected'
-    z_scale = 0
+    @z_scale = 0
     # update_graphviz_data
   end
 
   def exposed
     puts 'exposed to zombie'
-    z_scale = 1
+    @z_scale = 1
     # update_graphviz_data
   end
 
-  def risk_level_1
+  def exposure_level_1
     puts 'low level of risk for infection'
-    z_scale = 3
+    @z_scale = 3
     # update_graphviz_data
   end
   
-  def risk_level_2
+  def exposure_level_2
     puts 'moderate level of risk for infection'
-    z_scale = 5
+    @z_scale = 5
     # update_graphviz_data
   end
   
-  def risk_level_3
+  def exposure_level_3
     puts 'high level of risk for infection'
-    z_scale = 7
+    @z_scale = 7
     # update_graphviz_data
   end
   
@@ -99,23 +104,22 @@ class ZombieState
   
   def infected
     puts 'infected with zombie virus'
-    z_scale = 8
+    @z_scale = 8
     # update_graphviz_data
   end
   
   def proto_zombie
     puts 'starting to manifest zombie traits'
-    z_scale = 9
+    @z_scale = 9
     # update_graphviz_data
   end
   
   def zombie
     puts 'full zombie phenotype'
-    z_scale = 10
+    @z_scale = 10
     # update_graphviz_data
   end
   
-  attr_reader :z_scale
   def initialize
     @z_scale = 0
       

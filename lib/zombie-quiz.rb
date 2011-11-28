@@ -10,9 +10,11 @@ require 'rubygems'
 require 'highline/import'
 require File.expand_path(File.dirname(__FILE__) + '/../lib/zombie-state.rb')
 
+debug = 1
+
 print "\nWelcome to the 'Am I a Zombie' self-assessment test.\n\n"
 print "**Help stop the terror from spreading, please answer the following questions honestly.**\n\n"
-sleep 3
+sleep 3 unless debug
 
 puts "  First the good news:  if you are reading this and have concerns about whether you are a zombie or not "
 puts "(i.e. you are not wholy concerned with an insatiable desire for brains!), then there is still hope.  "
@@ -24,7 +26,7 @@ puts
 #  ans.validate = /Y|y|Yes|yes|N|n|No|no/i
 #}
 
-sleep 5
+sleep 5 unless debug
 
 done = nil
 until done
@@ -39,7 +41,8 @@ until done
       print "Yes?  Well, no surprise, they are taking over, so let's see how much exposure you've had.\n\n"
       risk += 2
       subject.exposed!
-      sleep 3
+      sleep 3 unless debug
+      print "**[Debug] End-of-Q1:  Z-scale = #{subject.z_scale}\n" if debug
       
       ## Question 2
       choose do |q2|
@@ -47,8 +50,7 @@ until done
         q2.choice(:Yes) do |choice|
           ## risk level-1-3
           print "Yes again...  Hmmmm, that's worrisome.  Maybe you got off lucky.\n\n"
-          subject.risk1!
-          sleep 3
+          sleep 3 unless debug
   
           ## Question 3
           choose do |q3| 
@@ -57,8 +59,8 @@ until done
               ## risk level-2
               print "Uggghh.  Stinks doesn't it.  Use lots of bleach and you probably be OK.\n\n"
               risk += 2
-              subject.risk2!
-              sleep 3
+              subject.exposure_level_2!
+              sleep 3 unless debug
               
             end
             
@@ -66,8 +68,8 @@ until done
               ## risk level-3
               print "Bad Luck.  You are at risk for being a zombie.  Use lots of bleach and scrub vigorously!\n\n"
               risk += 4
-              subject.risk3!
-              sleep 3
+              subject.exposure_level_3!
+              sleep 3 unless debug
               
             end
             
@@ -75,8 +77,8 @@ until done
               ## risk level-3
               print "Double Yuck!  That's very gross!  You didn't swallow, did you?!  Gargling with bleach may help if you didn't...\n\n"
               risk += 4
-              subject.risk3!
-              sleep 3
+              subject.exposure_level_3!
+              sleep 3 unless debug
               
             end
             
@@ -85,25 +87,27 @@ until done
               print "Very Bad Luck!  Sorry buddy, but you will almost certainly be a zombie.\n\n"
               risk += 6
               subject.infected!
-              sleep 3
+              sleep 3 unless debug
               
             end
             
             q3.choice("None of the above.") do |choice|
               ## stays at risk level-1
               print "Just had a scuffle, but got away?  Good cardio works!\n\n"
-              # no chane in subject state
-              sleep 3
+              subject.exposure_level_1!
+              sleep 3 unless debug
               
             end            
           end
+          print "**[Debug] End-of-Q3:  Z-scale = #{subject.z_scale}\n" if debug
+          
         end
             
         q2.choice(:No) do |choice|
           ## risk level-1
           print "No?  Great!  You're probably fine then.\n\n"
           # no change in subject state
-          sleep 3
+          sleep 3 unless debug
           
         end
       end
@@ -113,13 +117,13 @@ until done
       ## risk level-0
       print "No...  Uhhh, OK.  Are you sure you need to take this test?  Oh, right, you may not remember what happened.\n\n"
       # no change in subject status
-      sleep 3
+      sleep 3 unless debug
       
     end
   end
     
   print "OK, just one more question.\n\n"
-  sleep 3
+  sleep 3 unless debug
   
   ## Question 4
   z_result = 'no change'
@@ -128,7 +132,7 @@ until done
     puts "How do you feel about eating human brains?  "
     puts "  Please ponder this question carefully and answer as honestly as you can..."
     
-    sleep 3
+    sleep 3 unless debug
     
     q4.choice("It disgusts me.") do |choice|
       ## possibly infected, but not expressing any signs yet
@@ -147,7 +151,7 @@ until done
       ## could be ok, but best to classify as proto-zombie to be safe
       print "Hmmmm, maybe you just have strange culinary interests.\n\n"
       
-      if subject.z_scale = 8
+      if subject.z_scale == 8
         z_result = 'proto_zombie'        
       elsif subject.z_scale >= 1
         z_result = 'quarantine'        
@@ -174,6 +178,7 @@ until done
       
     end
   end
+  print "**[Debug] End-of-Q4:  Z-scale = #{subject.z_scale}\n" if debug
   
   ## check which state to place subject into
   case z_result
@@ -187,30 +192,30 @@ until done
     # do we need to do anything?
     
   end
-  sleep 3
+  sleep 3 unless debug
   
   print "Let's check you're score:  Z-scale = #{subject.z_scale}\n"
-  sleep 2
+  sleep 2 unless debug
   
   if subject.z_scale >= 9
     print "Sorry pal, you're a zombie.\n  [Hey guys, we've got another one!]\n\n"
     
-  elsif subject.z_scale = 8
+  elsif subject.z_scale == 8
     print "We've got some good news:  Your are not a zombie (yet).  However, you've been infected.  Would you like some tea...?\n\n"
   
   elsif subject.current_state.to_s == "quarantine"
     print "You're test results are in-conclusive, so we'd like to keep you around for a few days for observation.  .\n\n"
 
-  elsif (subject.z_scale = 1) and (z_result == 'let go')
+  elsif (subject.z_scale == 1) and (z_result == 'let go')
     print "You've had a close call, but are probably OK.\n  Take the test again in another 12-24 hours if you want to be sure.\n\n"
   
   else
-    print "Congratulations!  You passed, you are not a zombie.\n  Now try real hard to stay that way.\n\n"
+    print "Congratulations!  You passed, you are not a zombie.\n  Keep working on your cardio and try real hard to stay that way.\n\n"
   end
 
   choose do |continue|
     puts "Do you want to take the quiz again?  "
-    sleep 1
+    sleep 1 unless debug
 
     continue.choice("Yes") do |choice|
       print "OK, good luck.\n\n"
