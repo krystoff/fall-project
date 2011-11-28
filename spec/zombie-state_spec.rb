@@ -1,3 +1,11 @@
+# UWE Ruby Fall 2011 Class
+# Fall Project
+#   Chris Larson krystoff@uw.edu
+#   Andy Litzinger ajlitzin@uw.edu
+#   @version 0.1
+#
+#
+
 require "rubygems"
 require "bundler/setup"
 require 'simplecov'
@@ -32,9 +40,10 @@ describe "states" do
       subject.current_state.events.should have_key(:exposure_level_1)
       subject.current_state.events.should have_key(:exposure_level_2)
       subject.current_state.events.should have_key(:exposure_level_3)
+      subject.current_state.events.should have_key(:quarantine)
       subject.current_state.events.should have_key(:infected)
       subject.current_state.events.should have_key(:proto_zombie)
-      subject.current_state.events.keys.should == [:exposure_level_1,:exposure_level_2,:exposure_level_3,:infected,:proto_zombie]
+      subject.current_state.events.keys.should == [:exposure_level_1,:exposure_level_2,:exposure_level_3,:quarantine,:infected,:proto_zombie]
     end
   end
   

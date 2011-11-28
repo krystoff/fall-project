@@ -61,6 +61,7 @@ open '#{fname}.pdf'
       event :exposure_level_1, :transitions_to => :risk_level_1
       event :exposure_level_2, :transitions_to => :risk_level_2
       event :exposure_level_3, :transitions_to => :risk_level_3
+      event :quarantine, :transitions_to => :quarantine
       event :infected, :transitions_to => :infected
       event :proto_zombie, :transitions_to => :proto_zombie
       #event :zombie, :transitions_to => :zombie
@@ -99,23 +100,28 @@ open '#{fname}.pdf'
     state :zombie
   end
  
+  attr_reader :z_scale
+  #def z_scale
+  #  @z_scale = z_scale
+  #end
+
   def human
     puts 'human/not infected'
-    z_scale = 0
+    @z_scale = 0
     # update_graphviz_data
 	#self.class.create_workflow_diagram(ZombieState, "human")
   end
 
   def exposed
     puts 'exposed to zombie'
-    z_scale = 1
+    @z_scale = 1
     # update_graphviz_data
 	self.class.create_workflow_diagram(ZombieState, "exposed")
   end
 
-  def risk_level_1
+  def exposure_level_1
     puts 'low level of risk for infection'
-    z_scale = 3
+    @z_scale = 3
     # update_graphviz_data
 	self.class.create_workflow_diagram(ZombieState, "risk_level_1")
   end
@@ -127,15 +133,15 @@ open '#{fname}.pdf'
 	self.class.create_workflow_diagram(ZombieState, "risk_level_1")
   end
   
-  def risk_level_2
+  def exposure_level_2
     puts 'moderate level of risk for infection'
-    z_scale = 5
+    @z_scale = 5
     # update_graphviz_data
   end
   
-  def risk_level_3
+  def exposure_level_3
     puts 'high level of risk for infection'
-    z_scale = 7
+    @z_scale = 7
     # update_graphviz_data
   end
   
@@ -147,23 +153,22 @@ open '#{fname}.pdf'
   
   def infected
     puts 'infected with zombie virus'
-    z_scale = 8
+    @z_scale = 8
     # update_graphviz_data
   end
   
   def proto_zombie
     puts 'starting to manifest zombie traits'
-    z_scale = 9
+    @z_scale = 9
     # update_graphviz_data
   end
   
   def zombie
     puts 'full zombie phenotype'
-    z_scale = 10
+    @z_scale = 10
     # update_graphviz_data
   end
   
-  attr_reader :z_scale
   def initialize
     @z_scale = 0
       
