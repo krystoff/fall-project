@@ -187,9 +187,11 @@ until done
   ## check which state to place subject into
   case z_result
   when 'proto_zombie'
+    subject.exposed! if subject.z_scale < 1
     subject.proto_zombie! unless subject.z_scale >= 9
     
   when 'quarantine'
+    subject.exposed! if subject.z_scale < 1
     subject.quarantine!
     
   when 'let go'
