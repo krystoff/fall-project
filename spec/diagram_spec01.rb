@@ -14,7 +14,7 @@ describe "it should color the current state " do
   it "should color the exposed state yellow" do
 
     subject.exposed!
-    subject.exposure_level_1!
+    subject.exposure_level_3!
     subject.quarantine!
     subject.proto_zombie!
     subject.zombie!

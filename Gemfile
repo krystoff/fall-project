@@ -3,7 +3,7 @@ source "http://rubygems.org"
 gem "workflow"
 #gem "rb-notifu"
 #gem "rb-fchange"
-#gem "ruby-graphviz"
+gem "ruby-graphviz"
 
 group :development, :test do
   gem "rspec"
