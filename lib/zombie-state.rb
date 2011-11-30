@@ -8,42 +8,35 @@
 # 
 #
 require 'workflow'
+require 'graphviz'
+
 class ZombieState
   include Workflow
 
-  def self.create_workflow_diagram(klass, cur_state = nil, cur_fill_color = "white", target_dir='.', graph_options='rankdir="LR", size="7,11.6", ratio="fill"')
-    workflow_name = "#{klass.name}_workflow".gsub('/', '_')
-    fname = File.join(target_dir, "generated_#{workflow_name}")
-    File.open("#{fname}.dot", 'w') do |file|
-      file.puts %Q|
-digraph #{workflow_name} {
-  graph [#{graph_options}];
-  node [shape=box];
-  edge [len=1];
-      |
-
-      klass.workflow_spec.states.each do |state_name, state|
-        unless state.name.to_s == cur_state.to_s
-		  file.puts %Q{  #{state.name} [label="#{state.name}"];}
-		else
-		  file.puts %Q{  #{state.name} [style=filled, fillcolor=#{cur_fill_color} label="#{state.name}"];}
-		end
-        state.events.each do |event_name, event|
-          meta_info = event.meta
-          if meta_info[:doc_weight]
-            weight_prop = ", weight=#{meta_info[:doc_weight]}"
-          else
-            weight_prop = ''
-          end
-          file.puts %Q{  #{state.name} -> #{event.transitions_to} [label="#{event_name.to_s}" #{weight_prop}];}
-        end
+  def self.create_workflow_diagram(klass, cur_state = nil, cur_fill_color = "white")
+    g = GraphViz.new( :G, :type => :digraph)
+    klass.workflow_spec.states.each do |state_name, state|
+      unless state.name.to_s == cur_state.to_s
+        #add node state.name with label state.name
+	    g.add_node("#{state.name}")
+      else
+        # add node with above plus fill color
+	    g.add_node("#{state.name}", :style => "filled", :fillcolor => cur_fill_color)
       end
-      file.puts "}"
-      file.puts
-    end
-    # this call seems to fuddle windows- possibly due to path slash direction
-	#`dot -Tpdf -o'#{fname}.pdf' '#{fname}.dot'`
- end
+      state.events.each do |event_name, event|
+       # meta_info = event.meta
+       # if meta_info[:doc_weight]
+       #   weight_prop = ", weight=#{meta_info[:doc_weight]}"
+       #  else
+       #    weight_prop = ''
+       # add_edge state.name, event.transitions_to label=event_name.to_s
+         #g.add_edge(state.name.to_s, event.transitions_to.to_s, :label => event_name.to_s)
+		 g.add_edge(state.name.to_s, event.transitions_to.to_s)
+      end
+	end
+    #create the png
+    g.output( :png => "my_zombie_state.png")
+  end
 
   workflow do
     state :human do
