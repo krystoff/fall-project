@@ -194,7 +194,6 @@ until done
     
   when 'quarantine'
     subject.exposed! if subject.z_scale < 1
-    subject.infected! if subject.z_scale < 8
     subject.quarantine!
     
   when 'let go'
