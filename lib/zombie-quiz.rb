@@ -11,6 +11,7 @@ require 'optparse'
 require 'rubygems'
 require 'highline/import'
 require File.expand_path(File.dirname(__FILE__) + '/../lib/zombie-state.rb')
+require File.expand_path(File.dirname(__FILE__) + '/../lib/graph-state.rb')
 
 options = {}
  
