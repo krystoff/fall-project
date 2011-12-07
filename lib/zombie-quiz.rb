@@ -189,10 +189,12 @@ until done
   case z_result
   when 'proto_zombie'
     subject.exposed! if subject.z_scale < 1
+    subject.infected! if subject.z_scale < 8
     subject.proto_zombie! unless subject.z_scale >= 9
     
   when 'quarantine'
     subject.exposed! if subject.z_scale < 1
+    subject.infected! if subject.z_scale < 8
     subject.quarantine!
     
   when 'let go'
